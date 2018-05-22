@@ -1,1 +1,1 @@
-# ruby-building-blocks
+A few practice problems to become familiarized with Ruby following The Odin Project.
