@@ -35,7 +35,7 @@ module Enumerable
 	def my_all? (args = nil)
 		if (block_given?)
 			for x in 0..self.length-1 do
-				if (yield(self[x]) == false)
+				if (self[x].nil? || yield(self[x]) == false)
 					return false
 				end
 			end
@@ -48,7 +48,7 @@ module Enumerable
 				end
 			else
 				for x in 0..self.length-1 do
-					if (args === self[x])
+					if (self[x].nil? || args === self[x])
 					else
 						return false
 					end
@@ -66,18 +66,14 @@ module Enumerable
 				end
 			end
 		else
-			if (args.nil?)
-				for x in 0..self.length-1 do
-					if (self[x] == true)
-						return true
-					end
-				end
+			if (self.nil?)
 			else
 				for x in 0..self.length-1 do
-					if (args === self[x])
-						return true
+					if (self[x].nil? || self[x] == false)
+						return false
 					end
 				end
+				return true
 			end
 		end
 		false
@@ -129,8 +125,10 @@ module Enumerable
 	end
 
 	def my_map(some_proc = nil)
-		#return to_enum(:my_select) unless block_given?
+		return to_enum(:my_each_with_index) unless block_given?
+		
 		output = []
+
 		if (some_proc.nil?)
 			for x in 0..self.length-1 do
 				output.push(yield(self[x]))
@@ -159,6 +157,7 @@ module Enumerable
 			end
 		else
 			if (initial.is_a? Symbol)
+				
 				for x in 0..usable.length-1 do
 					if (x == 0)
 						output = usable[x]
